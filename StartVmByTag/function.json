@@ -1,0 +1,18 @@
+{
+    "bindings": [
+      {
+        "name": "Timer",
+        "type": "timerTrigger",
+        "direction": "in",
+        "schedule": "0 30 7 * * *"
+      },
+      {
+        "type": "blob",
+        "name": "LogOutput",
+        "path": "logs/restartvmlog-{DateTime}.json",
+        "connection": "AzureWebJobsStorage",
+        "direction": "out"
+      }
+    ],
+    "disabled": false
+  }
