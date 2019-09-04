@@ -205,8 +205,8 @@
         "hostingPlanName": "[concat(parameters('functionAppName'), '-plan')]",
         "storageAccountName": "[concat('stofunc', uniquestring(resourceGroup().id))]",
         "BlobContainerName": "logs",
-        "repoUrl": "https://github.com/eamonoreilly/StartStopPowerShellFunction",
-        "branch": "master"
+        "GithubUri": "https://github.com/omiossec/StartStopVmByTag",
+        "prodbranch": "master"
     },
     "resources": [
         {
@@ -263,7 +263,22 @@
                 "name": "[parameters('functionAppName')]",
                 "clientAffinityEnabled": false,
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
-            }
+            },
+            "resources": [
+                {
+                  "apiVersion": "2015-08-01",
+                  "name": "web",
+                  "type": "sourcecontrols",
+                  "dependsOn": [
+                    "[resourceId('Microsoft.Web/Sites/', parameters('functionAppName'))]"
+                  ],
+                  "properties": {
+                    "RepoUrl": "[variables('GithubUri')]",
+                    "branch": "[variables('prodbranch')]",
+                    "IsManualIntegration": true
+                  }
+                }
+              ]
             
         },
         {
