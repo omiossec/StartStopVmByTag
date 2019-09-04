@@ -1,7 +1,7 @@
 # PowerShell Azure Function  Sample to start/stop VMs based on a tag
 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3a%2f%2fraw.githubusercontent.com%2fomiossec%2fStartStopVmByTag%2fmaster%2fazuredeploy.json) 
-<a href="http://armviz.io/#/?load=https%3a%2f%2fraw.githubusercontent.com%2feamonoreilly%2fStartStopPowerShellFunction%2fmaster%2fazuredeploy.json" target="_blank">
+<a href="http://armviz.io/#/?load=https%3a%2f%2fraw.githubusercontent.com%2fomiossec%2fStartStopVmByTag%2fmaster%2fazuredeploy.json" target="_blank">
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
@@ -38,3 +38,29 @@ The Managed identity should have at least
 You can also use VM Contributor. 
 
 
+### changing the schedule
+
+The function StartVmByTag start the VM at 7:30 and the function StopVmByTag stop the vm at 21:30
+you can change the schedule used in this example by editing the function.json.
+
+For StartVmByTag
+```json
+{
+        "name": "Timer",
+        "type": "timerTrigger",
+        "direction": "in",
+        "schedule": "0 30 7 * * *"
+      }
+```
+
+For StartVmByTag
+```json
+{
+        "name": "Timer",
+        "type": "timerTrigger",
+        "direction": "in",
+        "schedule": "0 30 21 * * *"
+      }
+```
+
+You can also use the online editor in the Portal
