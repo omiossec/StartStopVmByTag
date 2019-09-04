@@ -30,7 +30,7 @@
         throw "This Azure Function need 2 App Seeting variables TagName and TagValue"
     }
     
-    if ($null -eq $AzSubscriptionContex) {
+    if ($null -eq $AzSubscriptionContext) {
         throw "This Azure Function need a managed system identity"
     }
     
@@ -38,10 +38,10 @@
 
         $currentUTCtime = (Get-Date).ToUniversalTime()
     
-        $LogInfoHash = @{"Action-passdue"= $timer.IsPastDue; "Action-StartTime"= $currentUTCtime; "Action"= "Stop"}
+
         $ArrayListloginfos = New-Object System.Collections.ArrayList
     
-        $TaggedVmList += Get-AzVm | where-object  {$_.Tags.Keys -eq $ENV:TagName}
+        $TaggedVmList = Get-AzVm | where-object  {$_.Tags.Keys -eq $ENV:TagName}
     
         
         foreach ($vm in $TaggedVmList) {
@@ -55,9 +55,10 @@
                 Start-Sleep -Seconds 5
         }
 
-        $LogInfoHash.add($ArrayListloginfos)
-        
-        $LogInfoJson = $LogInfoHash | converto-json
+        $LogInfoHash = @{"Action-passdue"= $timer.IsPastDue; "Action-StartTime"= $currentUTCtime; "Action"= "Stop";"vm-list"=$ArrayListloginfos}
+
+    
+        $LogInfoJson = $LogInfoHash | ConvertTo-Json -Depth 4
 
         Push-OutputBinding -name LogOutput -value $LogInfoJson
        

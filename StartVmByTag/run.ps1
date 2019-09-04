@@ -29,7 +29,7 @@ if ($null -eq $ENV:TagName){
     throw "This Azure Function need 2 App Seeting variables TagName and TagValue"
 }
 
-if ($null -eq $AzSubscriptionContex) {
+if ($null -eq $AzSubscriptionContext) {
     throw "This Azure Function need a managed system identity"
 }
 
@@ -37,15 +37,15 @@ try  {
 
     $currentUTCtime = (Get-Date).ToUniversalTime()
     
-    $LogInfoHash = @{"Action-passdue"= $timer.IsPastDue; "Action-StartTime"= $currentUTCtime; "Action"= "Start"}
+    
     $ArrayListloginfos = New-Object System.Collections.ArrayList
 
     $TaggedVmList = @()
 
-    $TaggedVmList += Get-AzResource -Tag @{ $ENV:TagName="everyday" } -ResourceType "Microsoft.Compute/virtualMachines" | Select-Object name,ResourceGroupName
+    $TaggedVmList += Get-AzResource -Tag @{ $ENV:TagName="everyday" } -ResourceType "Microsoft.Compute/virtualMachines"  -ErrorAction SilentlyContinue | Select-Object name,ResourceGroupName
 
     if ((get-date).DayOfWeek -notin ("Saturday","sunday")) {
-        $TaggedVmList += Get-AzResource -Tag @{ $ENV:TagName="workday" } -ResourceType "Microsoft.Compute/virtualMachines" | Select-Object name,ResourceGroupName
+        $TaggedVmList += Get-AzResource -Tag @{ $ENV:TagName="workday" } -ResourceType "Microsoft.Compute/virtualMachines" -ErrorAction SilentlyContinue | Select-Object name,ResourceGroupName
     }
 
     foreach ($vm in $TaggedVmList) {
@@ -61,9 +61,10 @@ try  {
 
     }
 
-    $LogInfoHash.add($ArrayListloginfos)
-        
-    $LogInfoJson = $LogInfoHash | converto-json
+    $LogInfoHash = @{"Action-passdue"= $timer.IsPastDue; "Action-StartTime"= $currentUTCtime; "Action"= "Start";"vm-list"=$ArrayListloginfos}
+
+    
+    $LogInfoJson = $LogInfoHash | ConvertTo-Json -Depth 4
 
     Push-OutputBinding -name LogOutput -value $LogInfoJson
 
