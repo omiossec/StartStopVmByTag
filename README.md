@@ -8,7 +8,11 @@
 
 This sample allows you to Start and Stop VM on a Schedule based on a tag.
 
-The function will list all VM in the subscription with a specific tag, by default RestartPolicy. VM with this tag are deallocated by the StopVmByTag function. VM are started by the StartVmByTag function. This function looks at the value of the tag. If the value is "workday" VM are only started from Monday to Friday. In other case, VM are started every day. 
+The function will list all VM in the subscription with a specific tag, by default RestartPolicy. VM with this tag are deallocated by the StopVmByTag function. VM are started by the StartVmByTag function. This function looks at the value of the tag. If the value is "workday" VM are only started from Monday to Friday. In other case, VM are started every day.
+
+* workday; VMs are restarted only from monday to friday
+* everyday; VMs are restated only everyday
+* weekend; VMs are restarted from friday night to monday morning
 
 You can change the tag used in this function by changing the value of TagName in Application Settings.
 

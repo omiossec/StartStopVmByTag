@@ -40,9 +40,21 @@
     
 
         $ArrayListloginfos = New-Object System.Collections.ArrayList
+
+
+        #$TaggedVmList = Get-AzVm | where-object  {$_.Tags.Keys -eq $ENV:TagName}
     
-        $TaggedVmList = Get-AzVm | where-object  {$_.Tags.Keys -eq $ENV:TagName}
+        $TaggedVmList = @()
+
+        $TaggedVmList += Get-AzResource -Tag @{ $ENV:TagName="everyday" } -ResourceType "Microsoft.Compute/virtualMachines"  -ErrorAction SilentlyContinue | Select-Object name,ResourceGroupName
+        $TaggedVmList += Get-AzResource -Tag @{ $ENV:TagName="workday" } -ResourceType "Microsoft.Compute/virtualMachines"  -ErrorAction SilentlyContinue | Select-Object name,ResourceGroupName
     
+
+        if ((get-date).DayOfWeek -in ("friday","saturday","sunday")) {
+            $TaggedVmList += Get-AzResource -Tag @{ $ENV:TagName="weekend" } -ResourceType "Microsoft.Compute/virtualMachines" -ErrorAction SilentlyContinue | Select-Object name,ResourceGroupName
+        }
+    
+  
         
         foreach ($vm in $TaggedVmList) {
     
